@@ -7,9 +7,12 @@
     <h1>Momentum</h1>
 
     <ul>
-      @foreach ($projects as $project)
-        <li> {{ $project->title }}</li>
-      @endforeach
+      @forelse ($projects as $project)
+        <li><a href="{{ $project->path() }}">{{ $project->title }}</a></li>
+
+      @empty
+        No Projects Yet
+      @endforelse
     </ul>
   </body>
 </html>

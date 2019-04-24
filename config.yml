@@ -1,0 +1,47 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.2-apache-node-browsers
+        environment:
+          PGHOST: 127.0.0.1
+          PGUSER: myapp-test
+      - image: circleci/postgres:9.3-alpine-postgis
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: circle_test
+          POSTGRES_PASSWORD: ""
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Install and enable pdo_pgsql php extension
+          command: |
+            sudo apt-get update && sudo apt-get install libpq-dev
+            sudo docker-php-ext-install pdo_pgsql bcmath && sudo docker-php-ext-enable pdo_pgsql bcmath
+      - run:
+          name: Update composer
+          command: sudo composer self-update
+      - restore_cache:
+          keys:
+            - composer-v1-{{ checksum "composer.json" }}
+            - composer-v1-
+      - run:
+          name: Install php dependencies
+          command: composer install -n --prefer-dist
+      - save_cache:
+          key: composer-v1-{{ checksum "composer.json" }}
+          paths:
+            - vendor
+      - run:
+          name: Populate .env
+          command: cp .env.testing .env
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Run database migrations
+          command: php artisan migrate --force
+      - run:
+          name: Run tests
+          command: ./vendor/bin/phpunit
