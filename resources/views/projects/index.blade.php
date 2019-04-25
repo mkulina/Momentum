@@ -1,18 +1,16 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title></title>
-  </head>
-  <body>
-    <h1>Momentum</h1>
+@extends('layouts.app')
 
-    <ul>
-      @forelse ($projects as $project)
-        <li><a href="{{ $project->path() }}">{{ $project->title }}</a></li>
+@section('content')
+  <div style="display: flex; align-items: center;">
+    <h1 style="margin-right: auto;">Momentum</h1>
+    <a href="/projects/create">New Project</a>
+  </div>
+  <ul>
+    @forelse ($projects as $project)
+      <li><a href="{{ $project->path() }}">{{ $project->title }}</a></li>
 
-      @empty
-        No Projects Yet
-      @endforelse
-    </ul>
-  </body>
-</html>
+    @empty
+      No Projects Yet
+    @endforelse
+  </ul>
+@endsection

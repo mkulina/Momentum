@@ -6,34 +6,25 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ProjectsTest extends TestCase {
+class ManageProjectsTest extends TestCase {
   use WithFaker, RefreshDatabase;
 
-  public function test_guests_cannot_create_projects() {
+  public function test_guests_cannot_control_projects() {
 
-    $attributes = factory('App\Models\Project')->raw();
+    $newProject = factory('App\Models\Project')->create();
 
-    $this->post('/projects', $attributes)->assertRedirect('login');
-  }
-
-  public function test_guests_cannot_view_projects() {
-
-    $attributes = factory('App\Models\Project')->raw();
-
+    $this->post('/projects', $newProject->toArray())->assertRedirect('login');
     $this->get('/projects')->assertRedirect('login');
-  }
-
-  public function test_guests_cannot_view_a_single_project() {
-
-    $project = factory('App\Models\Project')->create();
-
-    $this->get($project->path())->assertRedirect('login');
+    $this->get('projects/create')->assertRedirect('login');
+    $this->get($newProject->path())->assertRedirect('login');
   }
 
   public function test_a_user_can_create_a_project() {
     $this->withoutExceptionHandling();
 
     $this->actingAs(factory('App\User')->create());
+
+    $this->get('/projects/create')->assertStatus(200);
 
     $attributes = [
       'title' => $this->faker->sentence,
@@ -47,7 +38,7 @@ class ProjectsTest extends TestCase {
   }
 
   public function test_a_user_can_view_their_project() {
-    // $this->withoutExceptionHandling();
+     $this->withoutExceptionHandling();
     $this->be(factory('App\User')->create());
 
     $project = factory('App\Models\Project')->create(['owner_id' => auth()->id()]);
@@ -81,5 +72,13 @@ class ProjectsTest extends TestCase {
     $attributes = factory('App\Models\Project')->raw(['description' => '']);
 
     $this->post('/projects', $attributes)->assertSessionHasErrors('description');
+  }
+
+  public function test_it_belongs_to_an_owner() {
+  $this->withoutExceptionHandling();
+
+  $project = factory('App\Models\Project')->create();
+
+  $this->assertInstanceOf('App\User', $project->owner);
   }
 }
