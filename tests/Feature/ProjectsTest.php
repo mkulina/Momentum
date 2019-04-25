@@ -9,54 +9,77 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class ProjectsTest extends TestCase {
   use WithFaker, RefreshDatabase;
 
-  public function test_only_autheticated_users_can_create_projects() {
+  public function test_guests_cannot_create_projects() {
 
     $attributes = factory('App\Models\Project')->raw();
 
     $this->post('/projects', $attributes)->assertRedirect('login');
   }
 
+  public function test_guests_cannot_view_projects() {
 
-    public function test_a_user_can_create_a_project() {
-      $this->withoutExceptionHandling();
+    $attributes = factory('App\Models\Project')->raw();
 
-      $this->actingAs(factory('App\User')->create());
+    $this->get('/projects')->assertRedirect('login');
+  }
 
-      $attributes = [
-        'title' => $this->faker->sentence,
-        'description' => $this->faker->paragraph
-      ];
-      $this->post('/projects', $attributes)->assertRedirect('/projects');
+  public function test_guests_cannot_view_a_single_project() {
 
-      $this->assertDatabaseHas('projects', $attributes);
+    $project = factory('App\Models\Project')->create();
 
-      $this->get('/projects')->assertSee($attributes['title']);
-    }
+    $this->get($project->path())->assertRedirect('login');
+  }
 
-    public function test_a_user_can_view_a_project() {
-      // $this->withoutExceptionHandling();
+  public function test_a_user_can_create_a_project() {
+    $this->withoutExceptionHandling();
 
-      $project = factory('App\Models\Project')->create();
+    $this->actingAs(factory('App\User')->create());
 
-      $this->get($project->path())
-           ->assertSee($project->title)
-           ->assertSee($project->description);
-    }
+    $attributes = [
+      'title' => $this->faker->sentence,
+      'description' => $this->faker->paragraph
+    ];
+    $this->post('/projects', $attributes)->assertRedirect('/projects');
 
-    public function test_a_project_requires_a_title() {
-      $this->actingAs(factory('App\User')->create());
+    $this->assertDatabaseHas('projects', $attributes);
 
-      $attributes = factory('App\Models\Project')->raw(['title' => '']);
+    $this->get('/projects')->assertSee($attributes['title']);
+  }
 
-      $this->post('/projects', $attributes)->assertSessionHasErrors('title');
-    }
+  public function test_a_user_can_view_their_project() {
+    // $this->withoutExceptionHandling();
+    $this->be(factory('App\User')->create());
 
-    public function test_a_project_requires_a_description() {
-      $this->actingAs(factory('App\User')->create());
+    $project = factory('App\Models\Project')->create(['owner_id' => auth()->id()]);
 
-      $attributes = factory('App\Models\Project')->raw(['description' => '']);
+    $this->get($project->path())
+          ->assertSee($project->title)
+          ->assertSee($project->description);
+  }
 
-      $this->post('/projects', $attributes)->assertSessionHasErrors('description');
-    }
+  public function test_an_authenticated_user_cannot_view_the_projects_of_others() {
+    $this->be(factory('App\User')->create());
 
+    // $this->withoutExceptionHandling();
+
+    $project = factory('App\Models\Project')->create();
+
+    $this->get($project->path())->assertStatus(403);
+  }
+
+  public function test_a_project_requires_a_title() {
+    $this->actingAs(factory('App\User')->create());
+
+    $attributes = factory('App\Models\Project')->raw(['title' => '']);
+
+    $this->post('/projects', $attributes)->assertSessionHasErrors('title');
+  }
+
+  public function test_a_project_requires_a_description() {
+    $this->actingAs(factory('App\User')->create());
+
+    $attributes = factory('App\Models\Project')->raw(['description' => '']);
+
+    $this->post('/projects', $attributes)->assertSessionHasErrors('description');
+  }
 }
