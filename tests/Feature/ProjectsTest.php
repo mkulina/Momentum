@@ -20,7 +20,7 @@ class ProjectsTest extends TestCase {
     public function test_a_user_can_create_a_project() {
       $this->withoutExceptionHandling();
 
-      $this->actingAs(factory('App\User'))->create();
+      $this->actingAs(factory('App\User')->create());
 
       $attributes = [
         'title' => $this->faker->sentence,
@@ -34,7 +34,7 @@ class ProjectsTest extends TestCase {
     }
 
     public function test_a_user_can_view_a_project() {
-      $this->withoutExceptionHandling();
+      // $this->withoutExceptionHandling();
 
       $project = factory('App\Models\Project')->create();
 
@@ -44,7 +44,7 @@ class ProjectsTest extends TestCase {
     }
 
     public function test_a_project_requires_a_title() {
-      $this->actingAs(factory('App\User'))->create();
+      $this->actingAs(factory('App\User')->create());
 
       $attributes = factory('App\Models\Project')->raw(['title' => '']);
 
@@ -52,7 +52,7 @@ class ProjectsTest extends TestCase {
     }
 
     public function test_a_project_requires_a_description() {
-      $this->actingAs(factory('App\User'))->create();
+      $this->actingAs(factory('App\User')->create());
 
       $attributes = factory('App\Models\Project')->raw(['description' => '']);
 

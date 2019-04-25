@@ -21,9 +21,7 @@ class ProjectsController extends Controller {
       'description' => 'required'
       ]);
 
-      $project['owner_id'] = auth()->id();
-
-    Project::create($project);
+     auth()->user()->projects()->create($project);
 
     return redirect('/projects');
   }
