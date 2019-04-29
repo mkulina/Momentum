@@ -26,7 +26,7 @@
         <div class="flex justify-between items-center py-2">
           <h1>
             <a class="navbar-brand" href="{{ url('/') }}">
-              <img src="/images/momentumlogo.png" style="width: 180px; padding-top: 10px;">
+              <img src="/images/Momentum_logo.svg" style="width: 200px; padding-top: 10px;">
             </a>
           </h1>
           <div>
