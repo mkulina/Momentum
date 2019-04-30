@@ -11,7 +11,8 @@ class ProjectTasksTest extends TestCase {
   use RefreshDatabase;
 
   public function test_a_project_can_have_tasks() {
-    $this->withoutExceptionHandling();
+    //$this->withoutExceptionHandling();
+
     $this->signIn();
 
     $project = factory(Project::class)->create(['owner_id' => auth()->id()]);
@@ -20,5 +21,17 @@ class ProjectTasksTest extends TestCase {
 
     $this->get($project->path())
          ->assertSee('Test task');
+  }
+
+  public function test_a_task_requires_a_body() {
+    $this->signIn();
+
+    $project = auth()->user()->projects()->create(
+      factory(Project::class)->raw()
+    );
+
+    $attributes = factory('App\Models\Task')->raw(['body' => '']);
+
+    $this->post($project->path() . '/tasks', $attributes)->assertSessionHasErrors('body');
   }
 }
