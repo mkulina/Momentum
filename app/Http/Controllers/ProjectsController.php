@@ -28,8 +28,8 @@ class ProjectsController extends Controller {
       'description' => 'required'
       ]);
 
-     auth()->user()->projects()->create($project);
+     $project = auth()->user()->projects()->create($project);
 
-    return redirect('/projects');
+    return redirect($project->path());
   }
 }

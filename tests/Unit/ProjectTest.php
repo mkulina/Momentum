@@ -13,7 +13,7 @@ class ProjectTest extends TestCase {
 
     $project->path();
 
-    $this->assertEquals('projects/' . $project->id, $project->path());
+    $this->assertEquals('/projects/' . $project->id, $project->path());
   }
 
   public function test_it_can_add_a_task() {
