@@ -45,6 +45,16 @@
     box-shadow: 0 2px 7px 0 #d877ff;
   }
 
+  .button-outline-dark {
+    @apply .border .border-grey-dark .bg-white .text-grey-dark .no-underline .rounded-lg .text-sm .py-2 .px-5;
+    box-shadow: 0 2px 7px 0 #d8d8d8;
+    }
+
+    .button-outline-dark:hover {
+    @apply .bg-grey-dark .text-white;
+    box-shadow: 0 3px 7px 0 #d8d8d8;
+    }
+
   .card {
     @apply .bg-white .p-5 .rounded-lg .shadow;
   }

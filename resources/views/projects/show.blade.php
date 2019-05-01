@@ -41,8 +41,8 @@
         <form method="POST" action=" {{ $project->path() }}">
           @method('PATCH')
           @csrf
-            <textarea class="card w-full mb-3" style="min-height: 200px" placeholder="Anything to take note of?">{{ $project->notes}}</textarea>
-            <button type="submit" class="button">Save</button>
+            <textarea class="card w-full mb-3" style="min-height: 200px" placeholder="Anything to take note of?" name="notes">{{ $project->notes}}</textarea>
+            <button type="submit" class="button float-right">Save</button>
         </form>
       </div>
     </div>
