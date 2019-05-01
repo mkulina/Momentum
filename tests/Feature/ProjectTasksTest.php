@@ -11,7 +11,7 @@ class ProjectTasksTest extends TestCase {
   use RefreshDatabase;
 
   public function test_a_project_can_have_tasks() {
-    //$this->withoutExceptionHandling();
+    $this->withoutExceptionHandling();
 
     $this->signIn();
 
