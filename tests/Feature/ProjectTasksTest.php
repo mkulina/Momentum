@@ -48,7 +48,9 @@ class ProjectTasksTest extends TestCase {
 
     $attributes = factory('App\Models\Task')->raw(['body' => '']);
 
-    $this->actingAs($project->owner)->post($project->path() . '/tasks', $attributes)->assertSessionHasErrors('body');
+    $this->actingAs($project->owner)
+        ->post($project->path() . '/tasks', $attributes)
+        ->assertSessionHasErrors('body');
   }
 
   public function test_only_the_owner_of_a_project_may_add_tasks() {
