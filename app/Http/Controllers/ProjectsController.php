@@ -12,9 +12,7 @@ class ProjectsController extends Controller {
   }
 
   public function show(Project $project) {
-    if (auth()->user()->isNot($project->owner)) {
-      abort(403);
-    }
+    $this->authorize('update', $project);
 
     return view('projects.show', compact('project'));
   }
@@ -22,14 +20,36 @@ class ProjectsController extends Controller {
   public function create() {
     return view('projects.create');
   }
+
   public function store(Project $project) {
     $project = request()->validate([
-      'title' => 'required',
-      'description' => 'required'
+      'title' => 'sometimes|required',
+      'description' => 'sometimes|required',
+      'notes' => 'nullable'
       ]);
 
-     auth()->user()->projects()->create($project);
+     $project = auth()->user()->projects()->create($project);
 
-    return redirect('/projects');
+    return redirect($project->path());
   }
+
+  public function edit(Project $project) {
+    $this->authorize('update', $project);
+    return view('projects.edit', compact('project'));
+  }
+
+  public function update(Project $project) {
+    $this->authorize('update', $project);
+
+    $attributes = request()->validate([
+      'title' => 'sometimes|required',
+      'description' => 'sometimes|required',
+      'notes' => 'nullable'
+      ]);
+
+    $project->update($attributes);
+
+    return redirect($project->path());
+  }
+
 }

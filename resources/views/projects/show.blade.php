@@ -7,7 +7,7 @@
     <p class="text-grey text-sm no-underline font-normal">
       <a class="text-grey text-sm no-underline font-normal" href="/projects">My Projects</a> / {{ $project->title }}
     </p>
-    <button href="/projects/create" class="button">New Project</button>
+    <a href="{{ $project->path() . '/edit'}}" class="button">Edit Project</a>
   </div>
 </header>
 
@@ -16,16 +16,41 @@
     <div class="lg:w-3/4 px-3">
       <div class="mb-8">
         <h2 class="text-lg text-grey font-normal mb-3">Tasks</h2>
-        {{-- tasks --}}
-        <div class="card mb-3">Lorem imsum.</div>
-        <div class="card mb-3">Lorem imsum.</div>
-        <div class="card mb-3">Lorem imsum.</div>
-        <div class="card">Lorem imsum.</div>
+        @foreach ($project->tasks as $task)
+          <div class="card mb-3">
+          <form method="POST" action="{{ $task->path() }}">
+              @method('PATCH')
+              @csrf
+                <div class="flex">
+                  <input name="body" class="w-full" value="{{ $task->body }}" {{ $task->completed ? 'text-grey' : ''}}>
+                  <input name="completed" type="checkbox" onChange="this.form.submit()" {{ $task->completed ? 'checked' : ''}}>
+                </div>
+            </form>
+          </div>
+        @endforeach
+        <div class="card mb-3">
+          <form action="{{$project->path() . '/tasks'}}" method="POST">
+            @csrf
+              <input placeholder="Add a new task" class="w-full" name="body">
+          </form>
+        </div>
+
       </div>
       <div class="mb-8">
         <h2 class="text-lg text-grey font-normal mb-3">General Notes</h2>
-        {{-- general notes --}}
-        <textarea class="card w-full" style="min-height: 200px">Lorem imsum.</textarea>
+        <form method="POST" action=" {{ $project->path() }}">
+          @method('PATCH')
+          @csrf
+            <textarea class="card w-full mb-3" style="min-height: 200px" placeholder="Anything to take note of?" name="notes">{{ $project->notes}}</textarea>
+            <button type="submit" class="button float-right">Save</button>
+        </form>
+        @if ($errors->any())
+        <div class="field mt-6">
+          @foreach($errors->all() as $error)
+            <li class="test-sm text-red">{{ $error }}</li>
+          @endforeach
+        </div>
+        @endif
       </div>
     </div>
     <div class="lg:w-1/4 px-3">

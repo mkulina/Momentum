@@ -585,6 +585,27 @@ table {
   box-shadow: 0 2px 7px 0 #d877ff;
 }
 
+.button-outline-dark {
+  border-width: 1px;
+  border-color: #8795a1;
+  background-color: #fff;
+  color: #8795a1;
+  text-decoration: none;
+  border-radius: .5rem;
+  font-size: .875rem;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  box-shadow: 0 2px 7px 0 #d8d8d8;
+}
+
+.button-outline-dark:hover {
+  background-color: #8795a1;
+  color: #fff;
+  box-shadow: 0 3px 7px 0 #d8d8d8;
+}
+
 .card {
   background-color: #fff;
   padding: 1.25rem;
