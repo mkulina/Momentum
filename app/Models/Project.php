@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\User;
 use App\Models\Task;
+use App\Models\Activity;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model {
@@ -23,5 +24,9 @@ class Project extends Model {
 
   public function addTask($body) {
     return $this->tasks()->create(['body' => $body]);
+  }
+
+  public function activity() {
+    return $this->hasMany(Activity::class);
   }
 }
