@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Facades\Tests\SetUp\ProjectFactory;
 
-class ActivityFeedTest extends TestCase {
+class RecordActivityTest extends TestCase {
   use RefreshDatabase;
 
   public function test_creating_a_project_records_activity() {
